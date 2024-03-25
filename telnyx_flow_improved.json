@@ -1,0 +1,940 @@
+[
+    {
+        "id": "aa74e115f3bf8ffb",
+        "type": "tab",
+        "label": "Telnyx flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8178faa233c4440c",
+        "type": "group",
+        "z": "aa74e115f3bf8ffb",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "c8a1359be2c541d0",
+            "d0f90431f7995970",
+            "6e7b6231f75a2e6a",
+            "f198650c7be8611a",
+            "cf90976fc06ed013",
+            "d013d17e21f17966",
+            "3c5a0dc05e965ee0",
+            "8d057caeec81241d",
+            "b55102792a94ef63",
+            "107d1b82831b95f2",
+            "0f2fe88b64c39343",
+            "ff54ebe915183e84",
+            "d680f68d47550c1a",
+            "748cb9309723cd02",
+            "9a0e32323d7c0599",
+            "e7b10edda6d14fc9",
+            "6c569976c5fb04af",
+            "b3eab389e7095cd1",
+            "d710273238459490"
+        ],
+        "x": 34,
+        "y": 159,
+        "w": 1470,
+        "h": 322
+    },
+    {
+        "id": "d7c596a900046e0c",
+        "type": "group",
+        "z": "aa74e115f3bf8ffb",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "2307eecdd794eb7a",
+            "2e564d6f44da8ee6",
+            "7f3157f510565247",
+            "91a80e2750a0dbd0",
+            "cee426670e96ecc5"
+        ],
+        "x": 34,
+        "y": 539,
+        "w": 702,
+        "h": 142
+    },
+    {
+        "id": "37e23c8a0a8ed9ab",
+        "type": "group",
+        "z": "aa74e115f3bf8ffb",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "e6250fc766ab069c",
+            "99f54a708b78bd3c",
+            "e6ba326ed8aacceb",
+            "133b57b8f336eb76",
+            "446d64da0d9b74c0",
+            "0e7e6b8e129feac7",
+            "473f114f325cc020",
+            "edb7f63ef9d20968",
+            "a7e6eb6c6bffc358",
+            "516adc98d9181dbb",
+            "a40c0b14a2398d84",
+            "34997248ea3ed31a"
+        ],
+        "x": 34,
+        "y": 739,
+        "w": 792,
+        "h": 182
+    },
+    {
+        "id": "b172f7d0efd7970d",
+        "type": "inject",
+        "z": "aa74e115f3bf8ffb",
+        "name": "Trigger",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "a96c6e49997c360f"
+            ]
+        ]
+    },
+    {
+        "id": "a96c6e49997c360f",
+        "type": "function",
+        "z": "aa74e115f3bf8ffb",
+        "name": "Define Telnyx variables",
+        "func": "// save telnyx api token in variable\nflow.set(\"api_token\",\"Bearer <YOUR TOKEN HERE>\");\n\n// save telnyx connection_id in variable\nflow.set(\"connection_id\", \"<CONNECTON ID HERE>\");\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2307eecdd794eb7a",
+        "type": "link in",
+        "z": "aa74e115f3bf8ffb",
+        "g": "d7c596a900046e0c",
+        "name": "link in 1",
+        "links": [
+            "8d057caeec81241d",
+            "a59468aef773519a"
+        ],
+        "x": 75,
+        "y": 640,
+        "wires": [
+            [
+                "2e564d6f44da8ee6"
+            ]
+        ]
+    },
+    {
+        "id": "2e564d6f44da8ee6",
+        "type": "function",
+        "z": "aa74e115f3bf8ffb",
+        "g": "d7c596a900046e0c",
+        "name": "Speak and gather",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/'+ msg.payload.data.payload.call_control_id +'/actions/gather_using_speak';\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = flow.get('api_token');\n\nmsg.payload = `\n{\n    \"payload\": \"Welcome to my dummy ivr. Press 1 for sales, press 2 for support, press 3 to hang up.\",\n    \"invalid_payload\": \"Invalid option\",\n    \"payload_type\": \"text\",\n    \"service_level\": \"basic\",\n    \"stop\": \"current\",\n    \"voice\": \"male\",\n    \"language\": \"en-US\",\n    \"minimum_digits\": 1,\n    \"maximum_digits\": 1,\n    \"valid_digits\": \"123\"\n}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 640,
+        "wires": [
+            [
+                "7f3157f510565247"
+            ]
+        ]
+    },
+    {
+        "id": "7f3157f510565247",
+        "type": "http request",
+        "z": "aa74e115f3bf8ffb",
+        "g": "d7c596a900046e0c",
+        "name": "Send request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 440,
+        "y": 640,
+        "wires": [
+            [
+                "91a80e2750a0dbd0"
+            ]
+        ]
+    },
+    {
+        "id": "91a80e2750a0dbd0",
+        "type": "debug",
+        "z": "aa74e115f3bf8ffb",
+        "g": "d7c596a900046e0c",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "c8a1359be2c541d0",
+        "type": "http in",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Incoming webhook",
+        "url": "/",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 300,
+        "wires": [
+            [
+                "d0f90431f7995970",
+                "b55102792a94ef63",
+                "0f2fe88b64c39343"
+            ]
+        ]
+    },
+    {
+        "id": "d0f90431f7995970",
+        "type": "switch",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Event filter",
+        "property": "payload.data.record_type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "event",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 370,
+        "y": 300,
+        "wires": [
+            [
+                "6e7b6231f75a2e6a"
+            ]
+        ]
+    },
+    {
+        "id": "6e7b6231f75a2e6a",
+        "type": "switch",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Call direction",
+        "property": "payload.data.payload.direction",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "incoming",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "outgoing",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 570,
+        "y": 300,
+        "wires": [
+            [
+                "107d1b82831b95f2"
+            ],
+            [
+                "6c569976c5fb04af"
+            ],
+            [
+                "ff54ebe915183e84"
+            ]
+        ]
+    },
+    {
+        "id": "f198650c7be8611a",
+        "type": "switch",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Call status",
+        "property": "payload.data.payload.state",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "parked",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1005,
+        "y": 220,
+        "wires": [
+            [
+                "d013d17e21f17966"
+            ]
+        ]
+    },
+    {
+        "id": "cf90976fc06ed013",
+        "type": "http request",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Send request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1408,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d013d17e21f17966",
+        "type": "function",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Answer call",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/'+msg.payload.data.payload.call_control_id+'/actions/answer';\nlet call_direction = msg.payload.data.payload.direction;\nlet call_leg_id = msg.payload.data.payload.call_leg_id;\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = flow.get('api_token');\n\nflow.set(call_leg_id, call_direction);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1228,
+        "y": 200,
+        "wires": [
+            [
+                "cf90976fc06ed013"
+            ]
+        ]
+    },
+    {
+        "id": "3c5a0dc05e965ee0",
+        "type": "comment",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Call establishment flow",
+        "info": "",
+        "x": 160,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "8d057caeec81241d",
+        "type": "link out",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "link out 1",
+        "mode": "link",
+        "links": [
+            "2307eecdd794eb7a"
+        ],
+        "x": 1367,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "b55102792a94ef63",
+        "type": "debug",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Debug all",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 340,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "107d1b82831b95f2",
+        "type": "switch",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Initial",
+        "property": "payload.data.event_type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "call.initiated",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 788,
+        "y": 240,
+        "wires": [
+            [
+                "f198650c7be8611a"
+            ]
+        ]
+    },
+    {
+        "id": "0f2fe88b64c39343",
+        "type": "http response",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Webhook response",
+        "statusCode": "200",
+        "headers": {},
+        "x": 150,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "ff54ebe915183e84",
+        "type": "switch",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Callbacks",
+        "property": "payload.data.event_type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "call.answered",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "call.hangup",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "call.dtmf.received",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 820,
+        "y": 380,
+        "wires": [
+            [
+                "e7b10edda6d14fc9"
+            ],
+            [
+                "748cb9309723cd02"
+            ],
+            [
+                "d680f68d47550c1a"
+            ]
+        ]
+    },
+    {
+        "id": "cee426670e96ecc5",
+        "type": "comment",
+        "z": "aa74e115f3bf8ffb",
+        "g": "d7c596a900046e0c",
+        "name": "Call handling flow",
+        "info": "",
+        "x": 140,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "d680f68d47550c1a",
+        "type": "link out",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "link out 2",
+        "mode": "link",
+        "links": [
+            "e6250fc766ab069c"
+        ],
+        "x": 975,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "e6250fc766ab069c",
+        "type": "link in",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "link in 2",
+        "links": [
+            "d680f68d47550c1a"
+        ],
+        "x": 75,
+        "y": 840,
+        "wires": [
+            [
+                "446d64da0d9b74c0"
+            ]
+        ]
+    },
+    {
+        "id": "99f54a708b78bd3c",
+        "type": "function",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "Dial",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/'+ msg.payload.data.payload.call_control_id +'/actions/transfer';\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = flow.get('api_token');\n\nmsg.payload = `\n{   \n    \"to\": \"<E164 phone here>\"\n}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 800,
+        "wires": [
+            [
+                "e6ba326ed8aacceb"
+            ]
+        ]
+    },
+    {
+        "id": "e6ba326ed8aacceb",
+        "type": "http request",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "Send request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 530,
+        "y": 800,
+        "wires": [
+            [
+                "133b57b8f336eb76"
+            ]
+        ]
+    },
+    {
+        "id": "133b57b8f336eb76",
+        "type": "debug",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "446d64da0d9b74c0",
+        "type": "switch",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "DTMF",
+        "property": "payload.data.payload.digit",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 200,
+        "y": 840,
+        "wires": [
+            [
+                "99f54a708b78bd3c"
+            ],
+            [
+                "516adc98d9181dbb"
+            ],
+            [
+                "473f114f325cc020"
+            ]
+        ]
+    },
+    {
+        "id": "748cb9309723cd02",
+        "type": "function",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Remove call data",
+        "func": "let call_leg_id = msg.payload.data.payload.call_leg_id;\n\nif (flow.get(call_leg_id)) {\n    flow.set(call_leg_id, undefined);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9a0e32323d7c0599",
+        "type": "switch",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Call status",
+        "property": "payload.call_direction",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "incoming",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "outgoing",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1232,
+        "y": 360,
+        "wires": [
+            [
+                "8d057caeec81241d"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "e7b10edda6d14fc9",
+        "type": "function",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Store call data",
+        "func": "let call_leg_id = msg.payload.data.payload.call_leg_id;\n\nif (flow.get(call_leg_id)) {\n    msg.payload.call_direction = flow.get(call_leg_id);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1042,
+        "y": 360,
+        "wires": [
+            [
+                "9a0e32323d7c0599"
+            ]
+        ]
+    },
+    {
+        "id": "6c569976c5fb04af",
+        "type": "switch",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Initial",
+        "property": "payload.data.event_type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "call.initiated",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 790,
+        "y": 300,
+        "wires": [
+            [
+                "b3eab389e7095cd1"
+            ]
+        ]
+    },
+    {
+        "id": "b3eab389e7095cd1",
+        "type": "switch",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Call status",
+        "property": "payload.data.payload.state",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "bridging",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1007,
+        "y": 280,
+        "wires": [
+            [
+                "d710273238459490"
+            ]
+        ]
+    },
+    {
+        "id": "d710273238459490",
+        "type": "function",
+        "z": "aa74e115f3bf8ffb",
+        "g": "8178faa233c4440c",
+        "name": "Store call data",
+        "func": "let call_direction = msg.payload.data.payload.direction;\nlet call_leg_id = msg.payload.data.payload.call_leg_id;\n\nflow.set(call_leg_id, call_direction);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0e7e6b8e129feac7",
+        "type": "comment",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "DTMF handling",
+        "info": "",
+        "x": 150,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "473f114f325cc020",
+        "type": "function",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "Hang up",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/'+ msg.payload.data.payload.call_control_id +'/actions/hangup';\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = flow.get('api_token');\n\nmsg.payload = `\n{   \n\n}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 880,
+        "wires": [
+            [
+                "edb7f63ef9d20968"
+            ]
+        ]
+    },
+    {
+        "id": "edb7f63ef9d20968",
+        "type": "http request",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "Send request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 530,
+        "y": 880,
+        "wires": [
+            [
+                "a7e6eb6c6bffc358"
+            ]
+        ]
+    },
+    {
+        "id": "a7e6eb6c6bffc358",
+        "type": "debug",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "debug 12",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "516adc98d9181dbb",
+        "type": "function",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "Dial",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/'+ msg.payload.data.payload.call_control_id +'/actions/transfer';\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = flow.get('api_token');\n\nmsg.payload = `\n{   \n    \"to\": \"<E164 phone here>\"\n}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 840,
+        "wires": [
+            [
+                "a40c0b14a2398d84"
+            ]
+        ]
+    },
+    {
+        "id": "a40c0b14a2398d84",
+        "type": "http request",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "Send request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 530,
+        "y": 840,
+        "wires": [
+            [
+                "34997248ea3ed31a"
+            ]
+        ]
+    },
+    {
+        "id": "34997248ea3ed31a",
+        "type": "debug",
+        "z": "aa74e115f3bf8ffb",
+        "g": "37e23c8a0a8ed9ab",
+        "name": "debug 13",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 840,
+        "wires": []
+    }
+]

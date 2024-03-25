@@ -1,0 +1,444 @@
+[
+    {
+        "id": "555097b895021bbf",
+        "type": "tab",
+        "label": "Telnyx flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a96aa38db5a2a102",
+        "type": "http in",
+        "z": "555097b895021bbf",
+        "name": "Incoming webhook",
+        "url": "/",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 120,
+        "wires": [
+            [
+                "0a079bd339deb6e2",
+                "80b70f9cce5d1519",
+                "b42f38ebbaa101e4"
+            ]
+        ]
+    },
+    {
+        "id": "0a079bd339deb6e2",
+        "type": "http response",
+        "z": "555097b895021bbf",
+        "name": "Webhook response",
+        "statusCode": "200",
+        "headers": {},
+        "x": 170,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "ae24796daa8fb6b8",
+        "type": "debug",
+        "z": "555097b895021bbf",
+        "name": "debug output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1190,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "e500db173c2b337f",
+        "type": "function",
+        "z": "555097b895021bbf",
+        "name": "Define http request and headers",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/' + msg.payload.data.payload.call_control_id + '/actions/answer';\nlet call_direction = msg.payload.data.payload.direction;\nlet call_leg_id = msg.payload.data.payload.call_leg_id;\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = 'Bearer <YOUR TOKEN HERE>'\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 100,
+        "wires": [
+            [
+                "128898ade40d0b3e"
+            ]
+        ]
+    },
+    {
+        "id": "128898ade40d0b3e",
+        "type": "http request",
+        "z": "555097b895021bbf",
+        "name": "Answer call request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 970,
+        "y": 100,
+        "wires": [
+            [
+                "ae24796daa8fb6b8"
+            ]
+        ]
+    },
+    {
+        "id": "80b70f9cce5d1519",
+        "type": "debug",
+        "z": "555097b895021bbf",
+        "name": "debug all",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 340,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "b42f38ebbaa101e4",
+        "type": "switch",
+        "z": "555097b895021bbf",
+        "name": "Call status",
+        "property": "payload.data.event_type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "call.initiated",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "call.answered",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "call.dtmf.received",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 430,
+        "y": 120,
+        "wires": [
+            [
+                "e500db173c2b337f"
+            ],
+            [
+                "2a84272fa00da4cd"
+            ],
+            [
+                "6bde47f28599b81d"
+            ]
+        ]
+    },
+    {
+        "id": "2a84272fa00da4cd",
+        "type": "function",
+        "z": "555097b895021bbf",
+        "name": "Define http request and headers",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/' + msg.payload.data.payload.call_control_id + '/actions/gather_using_speak';\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = 'Bearer <YOUR TOKEN HERE>'\n\nmsg.payload = `\n{\n    \"payload\": \"Welcome to my dummy ivr. Press 1 for sales, press 2 for support, press 3 to hang up.\",\n    \"invalid_payload\": \"Invalid option\",\n    \"payload_type\": \"text\",\n    \"service_level\": \"basic\",\n    \"stop\": \"current\",\n    \"voice\": \"male\",\n    \"language\": \"en-US\",\n    \"minimum_digits\": 1,\n    \"maximum_digits\": 1,\n    \"valid_digits\": \"123\"\n}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 140,
+        "wires": [
+            [
+                "3aa193e9afd57c68"
+            ]
+        ]
+    },
+    {
+        "id": "3aa193e9afd57c68",
+        "type": "http request",
+        "z": "555097b895021bbf",
+        "name": "Speak with TTS request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 990,
+        "y": 140,
+        "wires": [
+            [
+                "5750a57ff977e09d"
+            ]
+        ]
+    },
+    {
+        "id": "5750a57ff977e09d",
+        "type": "debug",
+        "z": "555097b895021bbf",
+        "name": "debug output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1210,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "6bde47f28599b81d",
+        "type": "switch",
+        "z": "555097b895021bbf",
+        "name": "DTMF",
+        "property": "payload.data.payload.digit",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 630,
+        "y": 260,
+        "wires": [
+            [
+                "24b3133bbe6eb1f9"
+            ],
+            [
+                "1f030a7a4cafd82c"
+            ],
+            [
+                "4099636eb04cbb85"
+            ]
+        ]
+    },
+    {
+        "id": "24b3133bbe6eb1f9",
+        "type": "function",
+        "z": "555097b895021bbf",
+        "name": "Transfer",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/'+ msg.payload.data.payload.call_control_id +'/actions/transfer';\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = 'Bearer <YOUR TOKEN HERE>';\n\nmsg.payload = `\n{   \n    \"to\": \"<E164 NUMBER>\"\n}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 220,
+        "wires": [
+            [
+                "11d298a14f191c0c"
+            ]
+        ]
+    },
+    {
+        "id": "1f030a7a4cafd82c",
+        "type": "function",
+        "z": "555097b895021bbf",
+        "name": "Transfer",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/'+ msg.payload.data.payload.call_control_id +'/actions/transfer';\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = 'Bearer <YOUR TOKEN HERE>';\n\nmsg.payload = `\n{   \n    \"to\": \"<E164 NUMBER>\"\n}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 260,
+        "wires": [
+            [
+                "64e25cb6c7ac843b"
+            ]
+        ]
+    },
+    {
+        "id": "4099636eb04cbb85",
+        "type": "function",
+        "z": "555097b895021bbf",
+        "name": "Hang up",
+        "func": "let api_url = 'https://api.telnyx.com/v2/calls/'+ msg.payload.data.payload.call_control_id +'/actions/hangup';\n\nmsg.url = api_url;\nmsg.headers = {};\nmsg.headers['Accept'] = 'application/json';\nmsg.headers['Content-Type'] = 'application/json';\nmsg.headers['Authorization'] = 'Bearer <YOUR TOKEN HERE>';\n\nmsg.payload = `\n{   \n\n}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 300,
+        "wires": [
+            [
+                "d01214f60cbba658"
+            ]
+        ]
+    },
+    {
+        "id": "d01214f60cbba658",
+        "type": "http request",
+        "z": "555097b895021bbf",
+        "name": "Send request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 960,
+        "y": 300,
+        "wires": [
+            [
+                "e9f1224db36d073b"
+            ]
+        ]
+    },
+    {
+        "id": "64e25cb6c7ac843b",
+        "type": "http request",
+        "z": "555097b895021bbf",
+        "name": "Send request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 960,
+        "y": 260,
+        "wires": [
+            [
+                "b425f40741915016"
+            ]
+        ]
+    },
+    {
+        "id": "11d298a14f191c0c",
+        "type": "http request",
+        "z": "555097b895021bbf",
+        "name": "Send request",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 960,
+        "y": 220,
+        "wires": [
+            [
+                "77b5691e82943f00"
+            ]
+        ]
+    },
+    {
+        "id": "77b5691e82943f00",
+        "type": "debug",
+        "z": "555097b895021bbf",
+        "name": "debug output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1150,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "b425f40741915016",
+        "type": "debug",
+        "z": "555097b895021bbf",
+        "name": "debug output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1150,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "e9f1224db36d073b",
+        "type": "debug",
+        "z": "555097b895021bbf",
+        "name": "debug output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1150,
+        "y": 300,
+        "wires": []
+    }
+]
